@@ -2,8 +2,6 @@ import express from "express";
 import catchAsync from "../utils/catchAsync.js";
 import Campground from "../models/campground.js";
 import Review from "../models/review.js";
-import ExpressError from "../utils/ExpressError.js";
-import { reviewSchema } from "../schemas.js";
 import { isLoggedIn } from "../middleware.js";
 import { validateReview } from "../middleware.js";
 
@@ -16,6 +14,7 @@ router.post(
   catchAsync(async (req, res) => {
     const review = new Review(req.body.review);
     const camp = await Campground.findById(req.params.id);
+    review.author = req.user._id;
     //console.log(review);
     camp.reviews.push(review);
     await review.save();

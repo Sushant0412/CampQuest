@@ -34,6 +34,7 @@
       <div class="card-footer text-muted">2 days ago</div>
     </div>
   </div>
+  <% if(currentUser){ %>
   <div class="col-6">
     <form
       action="/campgrounds/<%= campground.id %>/reviews"
@@ -84,4 +85,5 @@
       <% } %>
     </div>
   </div>
+  <% } %>
 </div>

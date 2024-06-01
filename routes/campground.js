@@ -1,10 +1,7 @@
 import express from "express";
 import catchAsync from "../utils/catchAsync.js";
 import Campground from "../models/campground.js";
-import { campgroundSchema } from "../schemas.js";
-import ExpressError from "../utils/ExpressError.js";
 import { isLoggedIn, isAuthor } from "../middleware.js";
-import passport from "passport";
 import { validateCampground } from "../middleware.js";
 
 const router = express.Router();
