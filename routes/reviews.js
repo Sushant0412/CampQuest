@@ -5,18 +5,9 @@ import Review from "../models/review.js";
 import ExpressError from "../utils/ExpressError.js";
 import { reviewSchema } from "../schemas.js";
 import { isLoggedIn } from "../middleware.js";
+import { validateReview } from "../middleware.js";
 
 const router = express.Router({ mergeParams: true });
-
-const validateReview = (req, res, next) => {
-  const { error } = reviewSchema.validate(req.body);
-  if (error) {
-    const msg = error.details.map((el) => el.message).join(",");
-    throw new ExpressError(msg, 400);
-  } else {
-    next();
-  }
-};
 
 router.post(
   "/",
