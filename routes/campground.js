@@ -1,6 +1,5 @@
 import express from "express";
 import catchAsync from "../utils/catchAsync.js";
-import Campground from "../models/campground.js";
 import {
   createCampground,
   deleteCampground,
