@@ -2,7 +2,7 @@ import express from "express";
 import catchAsync from "../utils/catchAsync.js";
 import Campground from "../models/campground.js";
 import Review from "../models/review.js";
-import { isLoggedIn } from "../middleware.js";
+import { isLoggedIn, isReviewAuthor } from "../middleware.js";
 import { validateReview } from "../middleware.js";
 
 const router = express.Router({ mergeParams: true });
@@ -28,6 +28,7 @@ router.post(
 router.delete(
   "/:reviewId",
   isLoggedIn,
+  isReviewAuthor,
   catchAsync(async (req, res) => {
     const { id, reviewId } = req.params;
     // pull is a command in mongo to remove all entries in an array having that value
