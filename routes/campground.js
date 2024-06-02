@@ -14,24 +14,19 @@ import { validateCampground } from "../middleware.js";
 
 const router = express.Router();
 
-router.get("/", catchAsync(home));
+router
+  .route("/")
+  .get(catchAsync(home))
+  .post(isLoggedIn, validateCampground, catchAsync(createCampground));
 
 router.get("/new", isLoggedIn, renderNewForm);
 
-router.post("/", isLoggedIn, validateCampground, catchAsync(createCampground));
-
-router.get("/:id", catchAsync(showCampground));
+router
+  .route("/:id")
+  .get(catchAsync(showCampground))
+  .put(validateCampground, isLoggedIn, isAuthor, catchAsync(updateCampground))
+  .delete(isLoggedIn, isAuthor, catchAsync(deleteCampground));
 
 router.get("/:id/edit", isLoggedIn, isAuthor, catchAsync(renderEditForm));
-
-router.put(
-  "/:id",
-  validateCampground,
-  isLoggedIn,
-  isAuthor,
-  catchAsync(updateCampground)
-);
-
-router.delete("/:id", isLoggedIn, isAuthor, catchAsync(deleteCampground));
 
 export default router;

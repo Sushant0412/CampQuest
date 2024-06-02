@@ -11,21 +11,19 @@ import {
   renderRegister,
 } from "../controllers/users.js";
 
-router.get("/register", renderRegister);
+router.route("/register").get(renderRegister).post(catchAsync(register));
 
-router.get("/login", renderLogin);
-
-router.post(
-  "/login",
-  catchReturnTo,
-  passport.authenticate("local", {
-    failureFlash: true,
-    failureRedirect: "/login",
-  }),
-  login
-);
-
-router.post("/register", catchAsync(register));
+router
+  .route("/login")
+  .get(renderLogin)
+  .post(
+    catchReturnTo,
+    passport.authenticate("local", {
+      failureFlash: true,
+      failureRedirect: "/login",
+    }),
+    login
+  );
 
 router.get("/logout", logout);
 
