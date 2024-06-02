@@ -20,11 +20,12 @@ const router = express.Router();
 router
   .route("/")
   .get(catchAsync(home))
-  //.post(isLoggedIn, validateCampground, catchAsync(createCampground));
-  .post(upload.array("image"), (req, res) => {
-    console.log(req.body, req.files);
-    res.send("Hi");
-  });
+  .post(
+    isLoggedIn,
+    upload.array("image"),
+    validateCampground,
+    catchAsync(createCampground)
+  );
 
 router.get("/new", isLoggedIn, renderNewForm);
 
