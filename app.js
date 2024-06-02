@@ -1,3 +1,9 @@
+import dotenv from "dotenv";
+
+if (process.env.NODE_ENV !== "production") {
+  dotenv.config();
+}
+
 import express from "express";
 import path from "path";
 import mongoose from "mongoose";
@@ -14,7 +20,7 @@ import User from "./models/user.js";
 import userRoutes from "./routes/user.js";
 
 mongoose
-  .connect("mongodb://localhost:27017/CampQuest", {
+  .connect(process.env.MONGODB_URL, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
@@ -35,7 +41,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
 
 const sessionConfig = {
-  secret: "keyboard cat",
+  secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: true,
   cookie: {
