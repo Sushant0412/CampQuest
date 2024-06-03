@@ -1,4 +1,5 @@
 import Campground from "../models/campground.js";
+import { cloudinary } from "../cloudinary/index.js";
 
 export const home = async (req, res) => {
   const campgrounds = await Campground.find({});
@@ -49,6 +50,8 @@ export const renderEditForm = async (req, res) => {
 
 export const updateCampground = async (req, res) => {
   const { id } = req.params;
+  //console.log(req.body);
+
   const campground = await Campground.findByIdAndUpdate(id, {
     ...req.body.campground,
   });
@@ -58,6 +61,15 @@ export const updateCampground = async (req, res) => {
   }));
   campground.images.push(...imgs);
   await campground.save();
+  if (req.body.deleteImages) {
+    for (let filename of req.body.deleteImages) {
+      await cloudinary.uploader.destroy(filename);
+    }
+    await campground.updateOne({
+      $pull: { images: { filename: { $in: req.body.deleteImages } } },
+    });
+  }
+  console.log(campground);
   if (!campground) {
     req.flash("error", "Camp doesn't exist");
     return res.redirect("/campgrounds");
