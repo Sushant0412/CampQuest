@@ -40,6 +40,7 @@ const seedDB = async () => {
           },
         ],
         author: "6659aa8a0deb0a17a0920703",
+        geometry: { coordinates: [72.900638, 19.069359], type: "Point" },
         description:
           "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quibusdam dolores vero perferendis laudantium, consequuntur voluptatibus nulla architecto, sit soluta esse iure sed labore ipsam a cum nihil atque molestiae deserunt!",
         price,
