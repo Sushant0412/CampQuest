@@ -94,8 +94,7 @@ map.on("load", () => {
   // description HTML from its properties.
   map.on("click", "unclustered-point", (e) => {
     const coordinates = e.features[0].geometry.coordinates.slice();
-    const title = e.features[0];
-    //console.log(title);
+    const mag = e.features[0].properties.mag;
     const tsunami = e.features[0].properties.tsunami === 1 ? "yes" : "no";
 
     // Ensure that if the map is zoomed out such that
@@ -107,8 +106,7 @@ map.on("load", () => {
 
     new mapboxgl.Popup()
       .setLngLat(coordinates)
-      .setHTML("<h3>Campgrounds !</h3>")
-      //.setHTML(`magnitude: ${title}<br>Was there a tsunami?: ${tsunami}`)
+      .setHTML(`magnitude: ${mag}<br>Was there a tsunami?: ${tsunami}`)
       .addTo(map);
   });
 
