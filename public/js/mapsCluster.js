@@ -8,7 +8,7 @@ const map = new mapboxgl.Map({
 });
 
 const nav = new mapboxgl.NavigationControl({
-  showCompass: true, // Include the compass button
+  showCompass: false, // Include the compass button
   showZoom: true,    // Include the zoom-in and zoom-out buttons
   visualizePitch: true // Visualize pitch by rotating X-axis of compass
 });
