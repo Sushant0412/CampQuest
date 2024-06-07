@@ -18,6 +18,7 @@ import passport from "passport";
 import LocalStrategy from "passport-local";
 import User from "./models/user.js";
 import userRoutes from "./routes/user.js";
+import ExpressMongoSanitize from "express-mongo-sanitize";
 
 mongoose
   .connect(process.env.MONGODB_URL, {
@@ -65,6 +66,8 @@ app.use((req, res, next) => {
   res.locals.error = req.flash("error");
   next();
 });
+
+app.use(ExpressMongoSanitize());
 
 app.use("/campgrounds", campgroundRoutes);
 app.use("/campgrounds/:id/reviews", reviewRoutes);
