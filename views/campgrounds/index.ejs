@@ -1,6 +1,6 @@
 <% layout('layouts/boilerplate')%>
 <div id="cluster-map"></div>
-<h1>All Campgrounds</h1>
+<h1 class="mt-3">All Campgrounds</h1>
 <div>
   <a href="/campgrounds/new">Add Campground</a>
 </div>
@@ -10,12 +10,18 @@
   <div class="row">
     <div class="col-md-4">
       <% if(campground.images.length){ %>
-      <img class="img-fluid" alt="" src="<%=campground.images[0].url%>" />
-      <% }else{ %>
       <img
+        crossorigin="anonymous"
         class="img-fluid"
         alt=""
-        src="https://res.cloudinary.com/dstqulozx/image/upload/v1717587722/CampQuest/jcbu07pc4t6zsdxqa6mh.png"
+        src="<%=campground.images[0].url%>"
+      />
+      <% }else{ %>
+      <img
+        crossorigin="anonymous"
+        class="img-fluid"
+        alt=""
+        src="https://res.cloudinary.com/dstqulozx/image/upload/v1717844643/CampQuest/r8ltrfojrdl5t45jqnps.jpg"
       />
       <% } %>
     </div>

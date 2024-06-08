@@ -1,7 +1,7 @@
 body {
   height: 100vh;
   background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
-    url("https://www.revv.co.in/blogs/wp-content/uploads/2021/03/camping-sites.jpg");
+    url("/css/homeBg.jpg");
   background-size: cover;
   background-position: center;
   text-shadow: 0 0.05rem 0.1rem rgba(0, 0, 0, 0.5);
@@ -9,8 +9,8 @@ body {
 }
 
 .cover-container {
-    max-width: 95vw;
-  }
+  max-width: 95vw;
+}
 
 .nav-link {
   padding: 0.25rem 0;
