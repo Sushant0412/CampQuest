@@ -4,7 +4,7 @@ import { places, descriptors } from "./seedHelpers.js";
 import Campground from "../models/campground.js";
 
 mongoose
-  .connect("mongodb://localhost:27017/CampQuest")
+  .connect("mongodb+srv://sushant:hello@cluster0.usskidt.mongodb.net/CampQuest")
   .then()
   .catch((e) => {
     console.log(e);
@@ -22,11 +22,11 @@ const sample = (array) => array[Math.floor(Math.random() * array.length)];
 const seedDB = async () => {
   console.log(cities.length);
   await Campground.deleteMany({});
-  for (let i = 0; i < 300; i++) {
+  for (let i = 0; i < 10; i++) {
     const random1000 = Math.floor(Math.random() * 936);
     const price = Math.floor(Math.random() * 20) + 10;
     const camp = new Campground({
-      author: "6659aa8a0deb0a17a0920703",
+      author: "66643464eae55741c8ef3d7e",
       location: `${cities[random1000].city}, ${cities[random1000].state}`,
       title: `${sample(descriptors)} ${sample(places)}`,
       description:
@@ -41,12 +41,12 @@ const seedDB = async () => {
       },
       images: [
         {
-          url: "https://res.cloudinary.com/dstqulozx/image/upload/v1717844643/CampQuest/r8ltrfojrdl5t45jqnps.jpg",
-          filename: "YelpCamp/ahfnenvca4tha00h2ubt",
+          url: "https://res.cloudinary.com/sushanttulasi/image/upload/v1717844643/CampQuest/r8ltrfojrdl5t45jqnps.jpg",
+          filename: "CampQuest/r8ltrfojrdl5t45jqnps",
         },
         {
-          url: "https://res.cloudinary.com/dstqulozx/image/upload/v1600060601/YelpCamp/ruyoaxgf72nzpi4y6cdi.png",
-          filename: "YelpCamp/ruyoaxgf72nzpi4y6cdi",
+          url: "https://res.cloudinary.com/sushanttulasi/image/upload/v1721220374/CampQuest/megmzomis3dfts84zkd4.jpg",
+          filename: "CampQuest/megmzomis3dfts84zkd4",
         },
       ],
     });
