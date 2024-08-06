@@ -18,6 +18,7 @@ import passport from "passport";
 import LocalStrategy from "passport-local";
 import User from "./models/user.js";
 import userRoutes from "./routes/user.js";
+import adminRoutes from "./routes/admin.js"
 import ExpressMongoSanitize from "express-mongo-sanitize";
 import helmet from "helmet";
 import MongoDBStore from "connect-mongo";
@@ -134,6 +135,7 @@ app.use(ExpressMongoSanitize());
 
 app.use("/campgrounds", campgroundRoutes);
 app.use("/campgrounds/:id/reviews", reviewRoutes);
+app.use("/admin", adminRoutes);
 app.use("/", userRoutes);
 
 app.get("/", (req, res) => {

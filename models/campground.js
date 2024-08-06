@@ -34,6 +34,7 @@ const campgroundSchema = new Schema(
         ref: "Review",
       },
     ],
+    approved: { type: Boolean, default: false },
   },
   opts
 );

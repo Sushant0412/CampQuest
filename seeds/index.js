@@ -45,10 +45,11 @@ const seedDB = async () => {
           filename: "CampQuest/r8ltrfojrdl5t45jqnps",
         },
         {
-          url: "https://res.cloudinary.com/sushanttulasi/image/upload/v1721220374/CampQuest/megmzomis3dfts84zkd4.jpg",
-          filename: "CampQuest/megmzomis3dfts84zkd4",
+          url: "https://res.cloudinary.com/sushanttulasi/image/upload/v1717844643/CampQuest/r8ltrfojrdl5t45jqnps.jpg",
+          filename: "CampQuest/r8ltrfojrdl5t45jqnps",
         },
       ],
+      approved: false, // Set approved to false
     });
     await camp.save();
   }

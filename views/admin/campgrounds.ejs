@@ -1,0 +1,51 @@
+<% layout('layouts/boilerplate')%>
+<div id="cluster-map"></div>
+<h1 class="mt-3">All Campgrounds</h1>
+<div>
+  <a href="/campgrounds/new">Add Campground</a>
+</div>
+<br />
+<% for (let campground of campgrounds){%>
+  <% if (!campground.approved) { %> <!-- Only display approved campgrounds -->
+  <div class="card mb-3">
+    <div class="row">
+      <div class="col-md-4">
+        <% if(campground.images.length){ %>
+        <img
+          crossorigin="anonymous"
+          class="img-fluid"
+          alt=""
+          src="<%=campground.images[0].url%>"
+        />
+        <% }else{ %>
+        <img
+          crossorigin="anonymous"
+          class="img-fluid"
+          alt=""
+          src="https://res.cloudinary.com/dstqulozx/image/upload/v1717844643/CampQuest/r8ltrfojrdl5t45jqnps.jpg"
+        />
+        <% } %>
+      </div>
+      <div class="col-md-8">
+        <div class="card-body">
+          <h5 class="card-title"><%= campground.title %></h5>
+          <p class="card-text"><%= campground.description %></p>
+          <p class="card-text">
+            <small class="text-muted"><%= campground.location%></small>
+          </p>
+          <a class="btn btn-primary" href="/campgrounds/<%=campground._id%>"
+            >View <%=campground.title%></a
+          >
+        </div>
+      </div>
+    </div>
+  </div>
+  <% } %> <!-- End of approval check -->
+<% }%>
+
+<script>
+  const mapboxToken = "<%- process.env.MAPBOX_TOKEN %>";
+  const campgrounds = {features: <%- JSON.stringify(campgrounds) %>}
+</script>
+
+<script src="/js/mapsCluster.js"></script>

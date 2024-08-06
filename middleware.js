@@ -12,6 +12,14 @@ const isLoggedIn = (req, res, next) => {
   next();
 };
 
+const isAdmin = (req, res, next) => {
+  if (req.isAuthenticated() && req.user.isAdmin) {
+    return next();
+  }
+  req.flash("error", "You do not have permission to do that!");
+  res.redirect("/login");
+};
+
 const catchReturnTo = (req, res, next) => {
   if (req.session.returnTo) {
     res.locals.returnTo = req.session.returnTo;
@@ -61,6 +69,7 @@ export {
   isLoggedIn,
   catchReturnTo,
   isAuthor,
+  isAdmin,
   validateCampground,
   validateReview,
   isReviewAuthor,
