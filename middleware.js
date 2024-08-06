@@ -14,9 +14,10 @@ const isLoggedIn = (req, res, next) => {
 
 const isAdmin = (req, res, next) => {
   if (req.isAuthenticated() && req.user.isAdmin) {
+    console.log("admin is logged in");
     return next();
   }
-  req.flash("error", "You do not have permission to do that!");
+  req.flash("error", "You do not have permission to do that.");
   res.redirect("/login");
 };
 

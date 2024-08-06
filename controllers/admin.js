@@ -1,4 +1,5 @@
 // controllers/admin.js
+import Campground from "../models/campground.js";
 import User from "../models/user.js";
 
 export const renderAdminLogin = (req, res) => {
@@ -6,14 +7,25 @@ export const renderAdminLogin = (req, res) => {
 };
 
 export const adminLogin = (req, res) => {
-  req.flash("success", "Welcome back, Admin!");
-  res.redirect("/admin/campgrounds");
+  if (req.user.isAdmin) {
+    req.session.isAdmin = true;
+    res.redirect("/admin/campgrounds");
+  } else {
+    req.session.isAdmin = false;
+    req.flash("error", "You are not authorized to access this page.");
+    res.redirect("/login");
+  }
 };
 
-export const adminLogout = (req, res) => {
-  req.logout(() => {
-    req.flash("success", "Logged out successfully!");
-    res.redirect("/admin/login");
+export const adminLogout = (req, res, next) => {
+  req.logout((err) => {
+    if (err) {
+      return next(err);
+    }
+    req.session.isAdmin = false;
+    res.clearCookie("isAdmin");
+    req.flash("success", "Logged out successfully.");
+    res.redirect("/");
   });
 };
 
@@ -23,12 +35,16 @@ export const renderAdminRegister = (req, res) => {
 
 export const adminRegister = async (req, res, next) => {
   try {
-    const { username, password } = req.body;
-    const user = new User({ username, isAdmin: true });
+    const { username, email, password } = req.body;
+    const user = new User({
+      username,
+      email,
+      isAdmin: true,
+    });
     const registeredUser = await User.register(user, password);
     req.login(registeredUser, (err) => {
       if (err) return next(err);
-      req.flash("success", "Welcome Admin!");
+      req.session.isAdmin = true;
       res.redirect("/admin/campgrounds");
     });
   } catch (e) {
@@ -40,13 +56,4 @@ export const adminRegister = async (req, res, next) => {
 export const showUnapprovedCampgrounds = async (req, res) => {
   const campgrounds = await Campground.find({ approved: false });
   res.render("admin/campgrounds", { campgrounds });
-};
-
-export const toggleApproval = async (req, res) => {
-  const { id } = req.params;
-  const campground = await Campground.findById(id);
-  campground.approved = !campground.approved;
-  await campground.save();
-  req.flash("success", "Campground approval status updated!");
-  res.redirect("/admin/campgrounds");
 };

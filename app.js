@@ -7,6 +7,7 @@ if (process.env.NODE_ENV !== "production") {
 import express from "express";
 import path from "path";
 import mongoose from "mongoose";
+import bodyParser from "body-parser";
 import ejsMate from "ejs-mate";
 import ExpressError from "./utils/ExpressError.js";
 import methodOverride from "method-override";
@@ -18,7 +19,7 @@ import passport from "passport";
 import LocalStrategy from "passport-local";
 import User from "./models/user.js";
 import userRoutes from "./routes/user.js";
-import adminRoutes from "./routes/admin.js"
+import adminRoutes from "./routes/admin.js";
 import ExpressMongoSanitize from "express-mongo-sanitize";
 import helmet from "helmet";
 import MongoDBStore from "connect-mongo";
@@ -41,6 +42,7 @@ app.engine("ejs", ejsMate);
 app.set("view engine", "ejs");
 app.set("views", path.join(process.cwd(), "views"));
 app.use(express.static(path.join(process.cwd(), "public")));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
 

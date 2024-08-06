@@ -8,9 +8,15 @@ import {
   renderNewForm,
   showCampground,
   updateCampground,
+  approveCampground,
+  revokeCampground,
 } from "../controllers/campgrounds.js";
-import { isLoggedIn, isAuthor } from "../middleware.js";
-import { validateCampground } from "../middleware.js";
+import {
+  isLoggedIn,
+  isAuthor,
+  validateCampground,
+  isAdmin,
+} from "../middleware.js";
 import multer from "multer";
 import { storage } from "../cloudinary/index.js";
 const upload = multer({ storage });
@@ -42,5 +48,8 @@ router
   .delete(isLoggedIn, isAuthor, catchAsync(deleteCampground));
 
 router.get("/:id/edit", isLoggedIn, isAuthor, catchAsync(renderEditForm));
+
+router.post("/:id/approve", isAdmin, approveCampground);
+router.post("/:id/revoke", isAdmin, revokeCampground);
 
 export default router;

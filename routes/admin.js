@@ -10,7 +10,7 @@ import {
   renderAdminRegister,
   adminRegister,
   showUnapprovedCampgrounds,
-  toggleApproval,
+  
 } from "../controllers/admin.js";
 
 // Admin login route
@@ -35,12 +35,5 @@ router
 
 // Show all unapproved campgrounds for admin
 router.get("/campgrounds", isAdmin, catchAsync(showUnapprovedCampgrounds));
-
-// Toggle approve/revoke status
-router.post(
-  "/campgrounds/:id/toggleApproval",
-  isAdmin,
-  catchAsync(toggleApproval)
-);
 
 export default router;

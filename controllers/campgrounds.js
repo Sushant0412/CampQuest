@@ -49,7 +49,12 @@ export const showCampground = async (req, res) => {
     req.flash("error", "Campground Not Found");
     return res.redirect("/campgrounds");
   }
-  res.render("campgrounds/show", { campground });
+  //res.render("campgrounds/show", { campground });
+  res.render("campgrounds/show", {
+    campground,
+    currentUser: req.user,
+    isAdmin: req.user && req.user.isAdmin,
+  });
 };
 
 export const renderEditForm = async (req, res) => {
@@ -98,3 +103,24 @@ export const deleteCampground = async (req, res) => {
   req.flash("success", "Camp Successfully Deleted");
   res.redirect("/campgrounds");
 };
+
+export const approveCampground = async (req, res) => {
+  const { id } = req.params;
+  const campground = await Campground.findById(id);
+  console.log(campground);
+  //campground.isApproved = true;
+  await campground.save();
+  req.flash("success", "Campground approved.");
+  res.redirect("/admin/campgrounds");
+};
+
+export const revokeCampground = async (req, res) => {
+  const { id } = req.params;
+  const campground = await Campground.findById(id);
+  campground.isApproved = false;
+  await campground.save();
+  req.flash("success", "Campground revoked.");
+  res.redirect("/admin/campgrounds");
+};
+
+
