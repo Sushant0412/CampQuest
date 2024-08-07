@@ -65,9 +65,9 @@
       </div>
       <% } %> <% if (isAdmin) { %>
       <div class="card-body">
-        <% if (campground.isApproved) { %>
+        <% if (campground.approved) { %>
         <form action="/campgrounds/<%= campground._id %>/revoke" method="POST">
-          <button class="btn btn-warning">Revoke</button>
+          <button class="btn btn-danger">Revoke</button>
         </form>
         <% } else { %>
         <form action="/campgrounds/<%= campground._id %>/approve" method="POST">

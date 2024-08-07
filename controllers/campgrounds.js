@@ -108,7 +108,7 @@ export const approveCampground = async (req, res) => {
   const { id } = req.params;
   const campground = await Campground.findById(id);
   console.log(campground);
-  //campground.isApproved = true;
+  campground.approved = true;
   await campground.save();
   req.flash("success", "Campground approved.");
   res.redirect("/admin/campgrounds");
@@ -117,7 +117,7 @@ export const approveCampground = async (req, res) => {
 export const revokeCampground = async (req, res) => {
   const { id } = req.params;
   const campground = await Campground.findById(id);
-  campground.isApproved = false;
+  campground.approved = false;
   await campground.save();
   req.flash("success", "Campground revoked.");
   res.redirect("/admin/campgrounds");

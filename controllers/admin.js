@@ -54,6 +54,6 @@ export const adminRegister = async (req, res, next) => {
 };
 
 export const showUnapprovedCampgrounds = async (req, res) => {
-  const campgrounds = await Campground.find({ approved: false });
+  const campgrounds = await Campground.find({});
   res.render("admin/campgrounds", { campgrounds });
 };
