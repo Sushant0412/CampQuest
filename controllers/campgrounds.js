@@ -1,11 +1,13 @@
 import Campground from "../models/campground.js";
 import mbxGeocoding from "@mapbox/mapbox-sdk/services/geocoding.js";
 const mapBoxToken = process.env.MAPBOX_TOKEN;
+import xlsx from "xlsx";
 const geocoder = mbxGeocoding({ accessToken: mapBoxToken });
 import { cloudinary } from "../cloudinary/index.js";
+import { updateExcelWithNewCampground } from "../middleware.js";
 
 export const home = async (req, res) => {
-  const campgrounds = await Campground.find({approved: true});
+  const campgrounds = await Campground.find({ approved: true });
   res.render("campgrounds/index", { campgrounds });
 };
 
@@ -29,6 +31,7 @@ export const createCampground = async (req, res, next) => {
   }));
   campground.author = req.user._id;
   await campground.save();
+  await updateExcelWithNewCampground(campground);
   req.flash(
     "success",
     "Campground added successfully. It will be verified and added in 2-3 days."
@@ -122,5 +125,3 @@ export const revokeCampground = async (req, res) => {
   req.flash("success", "Campground revoked.");
   res.redirect("/admin/campgrounds");
 };
-
-
