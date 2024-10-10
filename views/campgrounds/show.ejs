@@ -39,7 +39,7 @@
     <div class="card mb-3">
       <div class="card-body">
         <h5 class="card-title"><%= campground.title %></h5>
-        <p class="card-text"><%= campground.description %></p>
+        <p class="card-text"><pre><%= campground.description %></pre></p>
       </div>
       <ul class="list-group list-group-flush">
         <li class="list-group-item text-muted"><%= campground.location %></li>
@@ -127,32 +127,65 @@
     </form>
     <% } %>
     <h2>Reviews</h2>
-    <% campground.reviews.forEach(review => { %>
-    <div class="card mb-3">
-      <div class="card-body">
-        <h5 class="card-title"><%= review.author.username %></h5>
-        <p class="starability-result" data-rating="<%= review.rating %>">
-          Rated: <%= review.rating %> stars
-        </p>
-        <p class="card-text">Review: <%= review.content %></p>
-        <% if (currentUser && review.author.equals(currentUser._id)) { %>
-        <form
-          action="/campgrounds/<%= campground._id %>/reviews/<%= review._id %>?_method=DELETE"
-          method="POST"
-        >
-          <% if(!campground.author.equals(currentUser._id)) { %>
-          <button class="btn btn-sm btn-danger">Delete</button>
-          <% } %>
-        </form>
-        <% } %>
-      </div>
+    <div class="mb-3">
+      <label for="sortReviews" class="form-label">Sort by Rating</label>
+      <select id="sortReviews" class="form-select">
+        <option value="default">Default</option>
+        <option value="ascending">Lowest to Highest</option>
+        <option value="descending">Highest to Lowest</option>
+      </select>
     </div>
-    <% }) %> <% } %>
+    <div id="reviews-container">
+      <% campground.reviews.forEach(review => { %>
+        <div class="card mb-3 review-card" data-rating="<%= review.rating %>">
+          <div class="card-body">
+            <h5 class="card-title"><%= review.author.username %></h5>
+            <p class="starability-result" data-rating="<%= review.rating %>">
+              Rated: <%= review.rating %> stars
+            </p>
+            <p class="card-text">Review: <%= review.content %></p>
+            <% if (currentUser && review.author.equals(currentUser._id)) { %>
+            <form
+              action="/campgrounds/<%= campground._id %>/reviews/<%= review._id %>?_method=DELETE"
+              method="POST"
+            >
+              <% if(!campground.author.equals(currentUser._id)) { %>
+              <button class="btn btn-sm btn-danger">Delete</button>
+              <% } %>
+            </form>
+            <% } %>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+    <% } %>
   </div>
 </div>
+
+<script src="https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.js"></script>
+<script src="/js/showMap.js"></script>
 <script>
   const mapToken = '<%- process.env.MAPBOX_TOKEN %>';
   const campgrounds = <%- JSON.stringify(campground) %>;
+  document.getElementById('sortReviews').addEventListener('change', function () {
+    const sortOption = this.value;
+    const reviewsContainer = document.getElementById('reviews-container');
+    const reviews = Array.from(reviewsContainer.getElementsByClassName('review-card'));
+
+    // Sorting logic based on the selected option
+    if (sortOption === 'ascending') {
+      reviews.sort((a, b) => a.dataset.rating - b.dataset.rating);
+    } else if (sortOption === 'descending') {
+      reviews.sort((a, b) => b.dataset.rating - a.dataset.rating);
+    } else {
+      // Default: Reload page to reset sort
+      window.location.reload();
+      return;
+    }
+
+    // Clear the container and append sorted reviews
+    reviewsContainer.innerHTML = '';
+    reviews.forEach(review => reviewsContainer.appendChild(review));
+  });
 </script>
-<script src="https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.js"></script>
-<script src="/js/showMap.js"></script>
+
