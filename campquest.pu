@@ -46,11 +46,16 @@ package "CampQuest" {
         + displayMap(): void
     }
 
+    class Admin {
+        +approveCampground(camp: Campground): void
+        +revokeCampground(camp: Campground): void
+    }
 
-    User "1" -- "0..*" Campground : author
-    Campground "1" -- "0..*" Review : reviews
-    User "1" -- "0..*" Review : author
-    Campground "1" -- "1" Map : map
+    User "1" --> "many" Campground : owns
+    User "1" --> "many" Review : writes
+    Campground "1" --> "many" Review : has
+    Admin --> Campground : manages
+
 }
 
 @enduml
