@@ -13,6 +13,10 @@ const isLoggedIn = (req, res, next) => {
   next();
 };
 
+import xlsx from "xlsx";
+import Campground from "../models/campground.js";
+
+// Function to update the Excel file with all campgrounds
 export const updateExcelWithAllCampgrounds = async (next) => {
   const filePath = "./analytics/campgrounds.xlsx"; // Path to your Excel file
 
@@ -22,10 +26,13 @@ export const updateExcelWithAllCampgrounds = async (next) => {
 
     // Create an array to hold all campground data
     const campgroundsData = allCampgrounds.map((campground) => {
-      // Calculate the average rating for the first 10 reviews
+      // Sort the reviews by rating in descending order and take the first 10 reviews
       const ratings = campground.reviews
+        .sort((a, b) => b.rating - a.rating) // Sort in descending order
         .slice(0, 10)
         .map((review) => review.rating);
+
+      // Calculate the average rating
       const averageRating =
         ratings.length > 0
           ? ratings.reduce((acc, rating) => acc + rating, 0) / ratings.length
@@ -39,6 +46,7 @@ export const updateExcelWithAllCampgrounds = async (next) => {
       };
     });
 
+    campgroundsData.sort((a, b) => b.Rating - a.Rating);
     // Check if the Excel file already exists
     let wb;
     try {
@@ -48,18 +56,17 @@ export const updateExcelWithAllCampgrounds = async (next) => {
       wb = xlsx.utils.book_new();
     }
 
-    // Get the sheet, or create one if it doesn't exist
+    // Get or create the sheet for campgrounds
     const sheetName = "Campgrounds";
-    let ws = wb.Sheets[sheetName];
-    if (!ws) {
-      // If the sheet doesn't exist, create one
-      ws = xlsx.utils.json_to_sheet([]); // Start with an empty array
-      xlsx.utils.book_append_sheet(wb, ws, sheetName);
+    let ws = xlsx.utils.json_to_sheet(campgroundsData);
+
+    // If the sheet already exists, remove the old sheet
+    if (wb.Sheets[sheetName]) {
+      delete wb.Sheets[sheetName];
     }
 
-    // Update the sheet with the new data
-    const updatedWs = xlsx.utils.json_to_sheet(campgroundsData);
-    wb.Sheets[sheetName] = updatedWs;
+    // Add the updated sheet to the workbook
+    xlsx.utils.book_append_sheet(wb, ws, sheetName);
 
     // Write the updated workbook back to the file
     xlsx.writeFile(wb, filePath);

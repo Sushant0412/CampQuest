@@ -31,7 +31,7 @@ export const createCampground = async (req, res, next) => {
   }));
   campground.author = req.user._id;
   await campground.save();
-  await updateExcelWithAllCampgrounds(campground);
+  await updateExcelWithAllCampgrounds();
   req.flash(
     "success",
     "Campground added successfully. It will be verified and added in 2-3 days."
