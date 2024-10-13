@@ -4,7 +4,7 @@ import { places, descriptors } from "./seedHelpers.js";
 import Campground from "../models/campground.js";
 
 mongoose
-  .connect("mongodb+srv://sushant:hello@cluster0.usskidt.mongodb.net/SemV")
+  .connect("mongodb+srv://sushant:helloworld@cluster0.usskidt.mongodb.net/MiniProject")
   .then()
   .catch((e) => {
     console.log(e);
@@ -26,7 +26,7 @@ const seedDB = async () => {
     const random1000 = Math.floor(Math.random() * 936);
     const price = Math.floor(Math.random() * 20) + 10;
     const camp = new Campground({
-      author: "66b1bce4088a523404eeea80",
+      author: "670b8d1a00d4a806d85a4656",
       location: `${cities[random1000].city}, ${cities[random1000].state}`,
       title: `${sample(descriptors)} ${sample(places)}`,
       description:
