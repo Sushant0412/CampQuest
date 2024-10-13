@@ -13,11 +13,10 @@ const isLoggedIn = (req, res, next) => {
   next();
 };
 
-import xlsx from "xlsx";
-import Campground from "../models/campground.js";
+
 
 // Function to update the Excel file with all campgrounds
-export const updateExcelWithAllCampgrounds = async (next) => {
+export const updateExcelWithAllCampgrounds = async () => {
   const filePath = "./analytics/campgrounds.xlsx"; // Path to your Excel file
 
   try {
@@ -28,7 +27,7 @@ export const updateExcelWithAllCampgrounds = async (next) => {
     const campgroundsData = allCampgrounds.map((campground) => {
       // Sort the reviews by rating in descending order and take the first 10 reviews
       const ratings = campground.reviews
-        .sort((a, b) => b.rating - a.rating) // Sort in descending order
+        .sort((a, b) => b.rating - a.rating) // Sort reviews in descending order
         .slice(0, 10)
         .map((review) => review.rating);
 
@@ -46,36 +45,24 @@ export const updateExcelWithAllCampgrounds = async (next) => {
       };
     });
 
+    // Sort campgrounds by the average rating in descending order
     campgroundsData.sort((a, b) => b.Rating - a.Rating);
-    // Check if the Excel file already exists
-    let wb;
-    try {
-      wb = xlsx.readFile(filePath);
-    } catch (err) {
-      // If file does not exist, create a new workbook
-      wb = xlsx.utils.book_new();
-    }
 
-    // Get or create the sheet for campgrounds
-    const sheetName = "Campgrounds";
-    let ws = xlsx.utils.json_to_sheet(campgroundsData);
+    // Create a new workbook and add the sheet with campground data
+    const wb = xlsx.utils.book_new();
+    const ws = xlsx.utils.json_to_sheet(campgroundsData);
 
-    // If the sheet already exists, remove the old sheet
-    if (wb.Sheets[sheetName]) {
-      delete wb.Sheets[sheetName];
-    }
-
-    // Add the updated sheet to the workbook
-    xlsx.utils.book_append_sheet(wb, ws, sheetName);
+    // Append the new sheet to the workbook
+    xlsx.utils.book_append_sheet(wb, ws, "Campgrounds");
 
     // Write the updated workbook back to the file
     xlsx.writeFile(wb, filePath);
     console.log("Excel file updated with all campgrounds successfully!");
   } catch (error) {
     console.error("Error updating Excel file with all campgrounds:", error);
-    next(error);
   }
 };
+
 
 const isAdmin = (req, res, next) => {
   if (req.isAuthenticated() && req.user.isAdmin) {
