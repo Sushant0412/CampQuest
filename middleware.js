@@ -2,6 +2,7 @@ import { campgroundSchema, reviewSchema } from "./schemas.js";
 import ExpressError from "./utils/ExpressError.js";
 import Campground from "./models/campground.js";
 import Review from "./models/review.js";
+import xlsx from "xlsx";
 
 const isLoggedIn = (req, res, next) => {
   if (!req.isAuthenticated()) {
@@ -10,6 +11,63 @@ const isLoggedIn = (req, res, next) => {
     return res.redirect("/login");
   }
   next();
+};
+
+export const updateExcelWithAllCampgrounds = async (next) => {
+  const filePath = "./analytics/campgrounds.xlsx"; // Path to your Excel file
+
+  try {
+    // Fetch all campgrounds with populated reviews
+    const allCampgrounds = await Campground.find({}).populate("reviews");
+
+    // Create an array to hold all campground data
+    const campgroundsData = allCampgrounds.map((campground) => {
+      // Calculate the average rating for the first 10 reviews
+      const ratings = campground.reviews
+        .slice(0, 10)
+        .map((review) => review.rating);
+      const averageRating =
+        ratings.length > 0
+          ? ratings.reduce((acc, rating) => acc + rating, 0) / ratings.length
+          : 0; // Default to 0 if there are no ratings
+
+      // Create the campground data object
+      return {
+        Name: campground.title,
+        Location: campground.location,
+        Rating: averageRating, // Use the calculated average rating
+      };
+    });
+
+    // Check if the Excel file already exists
+    let wb;
+    try {
+      wb = xlsx.readFile(filePath);
+    } catch (err) {
+      // If file does not exist, create a new workbook
+      wb = xlsx.utils.book_new();
+    }
+
+    // Get the sheet, or create one if it doesn't exist
+    const sheetName = "Campgrounds";
+    let ws = wb.Sheets[sheetName];
+    if (!ws) {
+      // If the sheet doesn't exist, create one
+      ws = xlsx.utils.json_to_sheet([]); // Start with an empty array
+      xlsx.utils.book_append_sheet(wb, ws, sheetName);
+    }
+
+    // Update the sheet with the new data
+    const updatedWs = xlsx.utils.json_to_sheet(campgroundsData);
+    wb.Sheets[sheetName] = updatedWs;
+
+    // Write the updated workbook back to the file
+    xlsx.writeFile(wb, filePath);
+    console.log("Excel file updated with all campgrounds successfully!");
+  } catch (error) {
+    console.error("Error updating Excel file with all campgrounds:", error);
+    next(error);
+  }
 };
 
 const isAdmin = (req, res, next) => {

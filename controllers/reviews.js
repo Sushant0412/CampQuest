@@ -1,5 +1,6 @@
 import Review from "../models/review.js";
 import Campground from "../models/campground.js";
+import { updateExcelWithAllCampgrounds } from "../middleware.js";
 
 export const createReview = async (req, res) => {
   const review = new Review(req.body.review);
@@ -8,6 +9,7 @@ export const createReview = async (req, res) => {
   camp.reviews.push(review);
   await review.save();
   await camp.save();
+  await updateExcelWithAllCampgrounds();
   req.flash("success", "Review Created Successfully");
   res.redirect(`/campgrounds/${camp._id}`);
 };
@@ -19,6 +21,7 @@ export const deleteReview = async (req, res) => {
     $pull: { reviews: reviewId },
   });
   await Review.findByIdAndDelete(reviewId);
+  await updateExcelWithAllCampgrounds();
   req.flash("success", "Review Deleted Successfully");
   res.redirect(`/campgrounds/${id}`);
 };

@@ -3,9 +3,11 @@ import mbxGeocoding from "@mapbox/mapbox-sdk/services/geocoding.js";
 const mapBoxToken = process.env.MAPBOX_TOKEN;
 const geocoder = mbxGeocoding({ accessToken: mapBoxToken });
 import { cloudinary } from "../cloudinary/index.js";
+import xlsx from "xlsx";
+import { updateExcelWithAllCampgrounds } from "../middleware.js";
 
 export const home = async (req, res) => {
-  const campgrounds = await Campground.find({approved: true});
+  const campgrounds = await Campground.find({ approved: true });
   res.render("campgrounds/index", { campgrounds });
 };
 
@@ -29,6 +31,7 @@ export const createCampground = async (req, res, next) => {
   }));
   campground.author = req.user._id;
   await campground.save();
+  await updateExcelWithAllCampgrounds(campground);
   req.flash(
     "success",
     "Campground added successfully. It will be verified and added in 2-3 days."
@@ -92,6 +95,7 @@ export const updateCampground = async (req, res) => {
     req.flash("error", "Camp doesn't exist");
     return res.redirect("/campgrounds");
   }
+  await updateExcelWithAllCampgrounds();
   req.flash("success", "Camp Successfully Updated");
   res.redirect(`/campgrounds/${campground._id}`);
 };
@@ -100,6 +104,7 @@ export const deleteCampground = async (req, res) => {
   const { id } = req.params;
   const campground = await Campground.findById(id);
   await Campground.findByIdAndDelete(id);
+  await updateExcelWithAllCampgrounds();
   req.flash("success", "Camp Successfully Deleted");
   res.redirect("/campgrounds");
 };
@@ -122,5 +127,3 @@ export const revokeCampground = async (req, res) => {
   req.flash("success", "Campground revoked.");
   res.redirect("/admin/campgrounds");
 };
-
-
