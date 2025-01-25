@@ -1,55 +1,64 @@
-import React, { useState } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 
 const Navbar = ({ currentUser }) => {
-  const [isAdmin, setIsAdmin] = useState(localStorage.getItem("isAdmin"));
-
-  const handleLogout = () => {
-    localStorage.removeItem("isAdmin");
-    setIsAdmin(null); // Update the state after logout
-  };
-
   return (
-    <nav className="navbar sticky-top navbar-expand-lg navbar-dark bg-dark">
-      <div className="container-fluid">
-        <Link className="navbar-brand" to="/">
-          CampQuest
-        </Link>
-        <button
-          className="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarNavAltMarkup"
-          aria-controls="navbarNavAltMarkup"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
-        >
-          <span className="navbar-toggler-icon"></span>
-        </button>
-        <div className="collapse navbar-collapse" id="navbarNavAltMarkup">
-          <div className="navbar-nav">
-            <Link className="nav-link" to="/">
-              Home
+    <nav className="sticky top-0 bg-dark text-white">
+      <div className="max-w-full mx-auto px-4 py-3">
+        <div className="flex justify-between items-center">
+          <div className="flex gap-4 items-center">
+            <Link to="/" className="text-xl font-semibold">
+              CampQuest
             </Link>
-            <Link className="nav-link" to="/campgrounds">
-              All Campgrounds
-            </Link>
-            <Link className="nav-link" to="/campgrounds/new">
-              New Campground
-            </Link>
+
+            {/* Toggle Button for Mobile */}
+            <button
+              className="lg:hidden text-white"
+              type="button"
+              aria-controls="navbarNav"
+              aria-expanded="false"
+              aria-label="Toggle navigation"
+            >
+              <span className="navbar-toggler-icon"></span>
+            </button>
+
+            <div className="text-md hidden lg:flex space-x-8">
+              <Link to="/" className="text-gray-400 hover:text-gray-300">
+                Home
+              </Link>
+              <Link
+                to="/campgrounds"
+                className="text-gray-400 hover:text-gray-300"
+              >
+                All Campgrounds
+              </Link>
+              <Link
+                to="/campgrounds/new"
+                className="text-gray-400 hover:text-gray-300"
+              >
+                New Campground
+              </Link>
+            </div>
           </div>
-          <div className="navbar-nav ms-auto">
+
+          <div className="flex space-x-4">
             {!currentUser ? (
               <>
-                <Link className="nav-link" to="/login">
+                <Link to="/login" className="text-gray-400 hover:text-gray-300">
                   Login
                 </Link>
-                <Link className="nav-link" to="/register">
+                <Link to="/register" className="text-gray-400 hover:text-gray-300">
                   Register
                 </Link>
               </>
             ) : (
-              <Link className="nav-link" to="/logout" onClick={handleLogout}>
+              <Link
+                to="/logout"
+                className="text-white hover:text-gray-300"
+                onClick={() => {
+                  localStorage.removeItem("isAdmin");
+                }}
+              >
                 Logout
               </Link>
             )}
