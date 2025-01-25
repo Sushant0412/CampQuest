@@ -1,0 +1,10 @@
+function Footer() {
+  return (
+    <footer class="footer bg-dark py-3 mt-auto">
+      <div class="container">
+        <span class="text-muted">&copy; CampQuest 2025</span>
+      </div>
+    </footer>
+  );
+}
+export default Footer;
