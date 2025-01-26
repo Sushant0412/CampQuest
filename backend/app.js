@@ -6,6 +6,7 @@ if (process.env.NODE_ENV !== "production") {
 
 import express from "express";
 import path from "path";
+import cors from "cors";
 import mongoose from "mongoose";
 import bodyParser from "body-parser";
 import ejsMate from "ejs-mate";
@@ -134,7 +135,7 @@ app.use((req, res, next) => {
 });
 
 app.use(ExpressMongoSanitize());
-
+app.use(cors());
 app.use("/campgrounds", campgroundRoutes);
 app.use("/campgrounds/:id/reviews", reviewRoutes);
 app.use("/admin", adminRoutes);
