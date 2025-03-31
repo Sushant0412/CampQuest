@@ -8,7 +8,7 @@ import { updateExcelWithAllCampgrounds } from "../middleware.js";
 
 export const home = async (req, res) => {
   const campgrounds = await Campground.find({ approved: true });
-  res.render("campgrounds/index", { campgrounds });
+  res.json(campgrounds);
 };
 
 export const renderNewForm = (req, res) => {

@@ -5,6 +5,7 @@ if (process.env.NODE_ENV !== "production") {
 }
 
 import express from "express";
+import cors from "cors";
 import path from "path";
 import mongoose from "mongoose";
 import bodyParser from "body-parser";
@@ -37,6 +38,8 @@ mongoose
   });
 
 const app = express();
+
+app.use(cors());
 
 app.engine("ejs", ejsMate);
 app.set("view engine", "ejs");
