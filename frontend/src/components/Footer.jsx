@@ -4,10 +4,10 @@ const Footer = () => {
   return (
     <footer className="bg-light text-center text-lg-start mt-auto">
       <div
-        className="text-center p-3"
+        className="text-center p-3 text-gray-400 text-md"
         style={{ backgroundColor: "rgba(0, 0, 0, 0.2)" }}
       >
-        © 2024 CampQuest
+        © 2025 CampQuest. All rights reserved.
       </div>
     </footer>
   );

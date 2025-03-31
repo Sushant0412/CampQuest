@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axiosInstance from "./api/axiosInstance";
+import axiosInstance from "../api/axiosInstance";
 import { MapPin, PlusCircle, Eye } from "lucide-react";
 import { Link } from "react-router-dom";
 
