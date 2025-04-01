@@ -16,27 +16,43 @@ export const renderNewForm = (req, res) => {
 };
 
 export const createCampground = async (req, res, next) => {
-  const geoData = await geocoder
-    .forwardGeocode({
-      query: req.body.campground.location,
-      limit: 1,
-    })
-    .send();
+  try {
+    if (!req.body.campground || !req.body.campground.location) {
+      req.flash("error", "Location is required");
+      return res.redirect("/campgrounds/new");
+    }
 
-  const campground = new Campground(req.body.campground);
-  campground.geometry = geoData.body.features[0].geometry;
-  campground.images = req.files.map((f) => ({
-    url: f.path,
-    filename: f.filename,
-  }));
-  campground.author = req.user._id;
-  await campground.save();
-  await updateExcelWithAllCampgrounds();
-  req.flash(
-    "success",
-    "Campground added successfully. It will be verified and added in 2-3 days."
-  );
-  res.redirect("/campgrounds");
+    const geoData = await geocoder
+      .forwardGeocode({
+        query: req.body.campground.location,
+        limit: 1,
+      })
+      .send();
+
+    if (!geoData.body.features[0]) {
+      req.flash("error", "Invalid location provided");
+      return res.redirect("/campgrounds/new");
+    }
+
+    const campground = new Campground(req.body.campground);
+    campground.geometry = geoData.body.features[0].geometry;
+    campground.images = req.files.map((f) => ({
+      url: f.path,
+      filename: f.filename,
+    }));
+    campground.author = req.user._id;
+    await campground.save();
+    await updateExcelWithAllCampgrounds();
+    req.flash(
+      "success",
+      "Campground added successfully. It will be verified and added in 2-3 days."
+    );
+    res.redirect("/campgrounds");
+  } catch (error) {
+    console.error("Error creating campground:", error);
+    req.flash("error", "Failed to create campground");
+    res.redirect("/campgrounds/new");
+  }
 };
 
 export const showCampground = async (req, res) => {

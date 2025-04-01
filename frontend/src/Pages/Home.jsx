@@ -7,14 +7,18 @@ import Footer from "../components/Footer";
 
 const Home = () => {
   const [campgrounds, setCampgrounds] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchCampgrounds = async () => {
+      setLoading(true);
       try {
         const response = await axiosInstance.get("/campgrounds");
         setCampgrounds(response.data);
       } catch (error) {
         console.error("Error fetching campgrounds:", error);
+      } finally {
+        setLoading(false);
       }
     };
     fetchCampgrounds();

@@ -3,13 +3,10 @@ import catchAsync from "../utils/catchAsync.js";
 import {
   createCampground,
   deleteCampground,
-  home,
-  renderEditForm,
-  renderNewForm,
-  showCampground,
   updateCampground,
   approveCampground,
   revokeCampground,
+  home,
 } from "../controllers/campgrounds.js";
 import {
   isLoggedIn,
@@ -33,11 +30,8 @@ router
     catchAsync(createCampground)
   );
 
-router.get("/new", isLoggedIn, renderNewForm);
-
 router
   .route("/:id")
-  .get(catchAsync(showCampground))
   .put(
     isLoggedIn,
     isAuthor,
@@ -46,8 +40,6 @@ router
     catchAsync(updateCampground)
   )
   .delete(isLoggedIn, isAuthor, catchAsync(deleteCampground));
-
-router.get("/:id/edit", isLoggedIn, isAuthor, catchAsync(renderEditForm));
 
 router.post("/:id/approve", isAdmin, approveCampground);
 router.post("/:id/revoke", isAdmin, revokeCampground);

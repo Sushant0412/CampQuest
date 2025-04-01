@@ -4,14 +4,12 @@ import Footer from "./Footer";
 
 const Layout = () => {
   return (
-    <div className="d-flex flex-column vh-100 overflow-hidden"
-      
-    >
+    <div className="d-flex flex-column min-vh-100">
       {/* Fixed Transparent Navbar */}
       <Navbar />
 
       {/* Main Content - No scrolling issue */}
-      <main className="flex-grow d-flex justify-content-center align-items-center">
+      <main className="flex-grow-1 pt-[-20px] d-flex justify-content-center align-items-center">
         <Outlet />
       </main>
 

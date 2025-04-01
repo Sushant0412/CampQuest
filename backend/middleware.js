@@ -5,15 +5,18 @@ import Review from "./models/review.js";
 import xlsx from "xlsx";
 
 const isLoggedIn = (req, res, next) => {
-  if (!req.isAuthenticated()) {
-    req.session.returnTo = req.originalUrl;
-    req.flash("error", "You must be signed in");
-    return res.redirect("/login");
+  const token = req.headers.authorization?.split(" ")[1];
+  if (!token) {
+    return res.status(401).json({ message: "Authentication required" });
   }
-  next();
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = decoded;
+    next();
+  } catch (err) {
+    return res.status(401).json({ message: "Invalid token" });
+  }
 };
-
-
 
 // Function to update the Excel file with all campgrounds
 export const updateExcelWithAllCampgrounds = async () => {
@@ -62,7 +65,6 @@ export const updateExcelWithAllCampgrounds = async () => {
     console.error("Error updating Excel file with all campgrounds:", error);
   }
 };
-
 
 const isAdmin = (req, res, next) => {
   if (req.isAuthenticated() && req.user.isAdmin) {

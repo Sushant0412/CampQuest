@@ -7,11 +7,13 @@ import "react-toastify/dist/ReactToastify.css";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      setLoading(true);
       const response = await axiosInstance.post("/login", { email, password });
       const { success, message, user, token } = response.data;
 
@@ -40,6 +42,8 @@ const Login = () => {
     } catch (error) {
       console.error("Error logging in:", error);
       toast.error(error.response?.data?.message || "Error logging in");
+    } finally {
+      setLoading(false);
     }
   };
 
