@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import axiosInstance from "../api/axiosInstance";
 import { MapPin, PlusCircle, Eye } from "lucide-react";
 import { Link } from "react-router-dom";
+import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 
 const Home = () => {
   const [campgrounds, setCampgrounds] = useState([]);
@@ -19,7 +21,7 @@ const Home = () => {
   }, []);
 
   return (
-    <div className="container mx-auto p-6">
+    <div className="container mx-auto p-6 pt-20">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-10">
         <h1 className="text-4xl font-extrabold text-gray-900">
           Discover Campgrounds

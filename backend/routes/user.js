@@ -1,30 +1,18 @@
 import express from "express";
+import { register, login } from "../controllers/users.js";
+import { authMiddleware } from "../utils/jwt.js";
+
 const router = express.Router();
-import catchAsync from "../utils/catchAsync.js";
-import passport from "passport";
-import { catchReturnTo } from "../middleware.js";
-import {
-  login,
-  logout,
-  register,
-  renderLogin,
-  renderRegister,
-} from "../controllers/users.js";
 
-router.route("/register").get(renderRegister).post(catchAsync(register));
+router.post("/register", register);
+router.post("/login", login);
 
-router
-  .route("/login")
-  .get(renderLogin)
-  .post(
-    catchReturnTo,
-    passport.authenticate("local", {
-      failureFlash: true,
-      failureRedirect: "/login",
-    }),
-    login
-  );
-
-router.get("/logout", logout);
+// Protected route example
+router.get("/profile", authMiddleware, (req, res) => {
+  res.json({
+    success: true,
+    user: req.user,
+  });
+});
 
 export default router;

@@ -9,11 +9,21 @@ export const renderAdminLogin = (req, res) => {
 export const adminLogin = (req, res) => {
   if (req.user.isAdmin) {
     req.session.isAdmin = true;
-    res.redirect("/admin/campgrounds");
+    res.json({
+      success: true,
+      isAdmin: true,
+      user: {
+        id: req.user._id,
+        username: req.user.username,
+        email: req.user.email,
+      },
+    });
   } else {
     req.session.isAdmin = false;
-    req.flash("error", "You are not authorized to access this page.");
-    res.redirect("/login");
+    res.json({
+      success: false,
+      message: "You are not authorized to access this page.",
+    });
   }
 };
 
@@ -45,11 +55,21 @@ export const adminRegister = async (req, res, next) => {
     req.login(registeredUser, (err) => {
       if (err) return next(err);
       req.session.isAdmin = true;
-      res.redirect("/admin/campgrounds");
+      res.json({
+        success: true,
+        isAdmin: true,
+        user: {
+          id: registeredUser._id,
+          username: registeredUser.username,
+          email: registeredUser.email,
+        },
+      });
     });
   } catch (e) {
-    req.flash("error", e.message);
-    res.redirect("/admin/register");
+    res.json({
+      success: false,
+      message: e.message,
+    });
   }
 };
 
