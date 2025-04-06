@@ -4,17 +4,38 @@ import Campground from "./models/campground.js";
 import Review from "./models/review.js";
 import xlsx from "xlsx";
 
-const isLoggedIn = (req, res, next) => {
+// const isLoggedIn = (req, res, next) => {
+//   const token = req.headers.authorization?.split(" ")[1];
+//   if (!token) {
+//     return res.status(401).json({ message: "Authentication required" });
+//   }
+//   try {
+//     const decoded = jwt.verify(token, process.env.JWT_SECRET);
+//     req.user = decoded;
+//     next();
+//   } catch (err) {
+//     return res.status(401).json({ message: "Invalid token" });
+//   }
+// };
+
+const isLoggedIn = async (req, res, next) => {
   const token = req.headers.authorization?.split(" ")[1];
   if (!token) {
     return res.status(401).json({ message: "Authentication required" });
   }
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    // Import verifyToken function from jwt.js
+    const { verifyToken } = await import("./utils/jwt.js");
+    const decoded = verifyToken(token);
+    if (!decoded) {
+      return res.status(401).json({ message: "Invalid or expired token" });
+    }
     req.user = decoded;
     next();
   } catch (err) {
-    return res.status(401).json({ message: "Invalid token" });
+    return res
+      .status(401)
+      .json({ message: "Authentication failed", error: err.message });
   }
 };
 

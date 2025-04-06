@@ -18,8 +18,7 @@ export const renderNewForm = (req, res) => {
 export const createCampground = async (req, res, next) => {
   try {
     if (!req.body.campground || !req.body.campground.location) {
-      req.flash("error", "Location is required");
-      return res.redirect("/campgrounds/new");
+      return res.status(400).json({ error: "Location is required" });
     }
 
     const geoData = await geocoder
@@ -30,8 +29,7 @@ export const createCampground = async (req, res, next) => {
       .send();
 
     if (!geoData.body.features[0]) {
-      req.flash("error", "Invalid location provided");
-      return res.redirect("/campgrounds/new");
+      return res.status(400).json({ error: "Invalid location provided" });
     }
 
     const campground = new Campground(req.body.campground);
@@ -40,18 +38,19 @@ export const createCampground = async (req, res, next) => {
       url: f.path,
       filename: f.filename,
     }));
-    campground.author = req.user._id;
+    campground.author = req.user.id; // Use id from JWT token
     await campground.save();
     await updateExcelWithAllCampgrounds();
-    req.flash(
-      "success",
-      "Campground added successfully. It will be verified and added in 2-3 days."
-    );
-    res.redirect("/campgrounds");
+
+    return res.status(201).json({
+      success: true,
+      message:
+        "Campground added successfully. It will be verified and added in 2-3 days.",
+      campground: campground,
+    });
   } catch (error) {
     console.error("Error creating campground:", error);
-    req.flash("error", "Failed to create campground");
-    res.redirect("/campgrounds/new");
+    return res.status(500).json({ error: "Failed to create campground" });
   }
 };
 

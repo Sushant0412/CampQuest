@@ -7,6 +7,7 @@ if (process.env.NODE_ENV !== "production") {
 import express from "express";
 import cors from "cors";
 import path from "path";
+import flash from "connect-flash";
 import mongoose from "mongoose";
 import bodyParser from "body-parser";
 import ejsMate from "ejs-mate";
@@ -19,6 +20,9 @@ import userRoutes from "./routes/user.js";
 import adminRoutes from "./routes/admin.js";
 import ExpressMongoSanitize from "express-mongo-sanitize";
 import helmet from "helmet";
+import session from "express-session";
+
+// Session configuration (required for flash)
 
 mongoose
   .connect(process.env.MONGODB_URL, {
@@ -38,9 +42,21 @@ app.use(
   cors({
     origin: "http://localhost:5173",
     credentials: true,
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    allowedHeaders: "Content-Type, Authorization",
+    exposedHeaders: ["Content-Range", "X-Content-Range"],
   })
 );
 
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false }, // Set to true if using HTTPS
+  })
+);
+app.use(flash());
 app.engine("ejs", ejsMate);
 app.set("view engine", "ejs");
 app.set("views", path.join(process.cwd(), "views"));

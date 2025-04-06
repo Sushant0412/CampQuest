@@ -43,7 +43,7 @@ const formSchema = z.object({
 export default function NewCampgroundPage() {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [images, setImages] = useState([]);
+  const [image, setImage] = useState([]);
   const [previews, setPreviews] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -63,7 +63,7 @@ export default function NewCampgroundPage() {
     if (!e.target.files || e.target.files.length === 0) return;
 
     const newFiles = Array.from(e.target.files);
-    setImages((prev) => [...prev, ...newFiles]);
+    setImage((prev) => [...prev, ...newFiles]);
 
     // Generate previews
     const newPreviews = newFiles.map((file) => URL.createObjectURL(file));
@@ -74,12 +74,12 @@ export default function NewCampgroundPage() {
     // Revoke object URL to prevent memory leaks
     URL.revokeObjectURL(previews[index]);
 
-    setImages(images.filter((_, i) => i !== index));
+    setImage(image.filter((_, i) => i !== index));
     setPreviews(previews.filter((_, i) => i !== index));
   };
 
   async function onSubmit(values) {
-    if (images.length === 0) {
+    if (image.length === 0) {
       toast({
         title: "Error",
         description: "Please upload at least one image",
@@ -100,8 +100,8 @@ export default function NewCampgroundPage() {
       });
 
       // Append images
-      images.forEach((image) => {
-        formData.append("images", image);
+      image.forEach((image) => {
+        formData.append("image", image);
       });
 
       const response = await axiosInstance.post("/campgrounds", formData, {
@@ -110,7 +110,7 @@ export default function NewCampgroundPage() {
           authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
-      console.log(localStorage.getItem("token"));
+      //console.log(localStorage.getItem("token"));
       toast({
         title: "Success!",
         description: "Your campground has been created",
@@ -259,13 +259,13 @@ export default function NewCampgroundPage() {
                   </FormLabel>
                   <div className="flex items-center gap-4">
                     <label
-                      htmlFor="images"
+                      htmlFor="image"
                       className="flex items-center justify-center gap-2 px-6 py-4 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors text-lg"
                     >
                       <Upload className="h-6 w-6 text-gray-500" />
                       <span>Upload Photos</span>
                       <Input
-                        id="images"
+                        id="image"
                         type="file"
                         accept="image/*"
                         multiple
@@ -274,7 +274,7 @@ export default function NewCampgroundPage() {
                       />
                     </label>
                     <p className="text-base text-gray-500">
-                      {images.length} {images.length === 1 ? "file" : "files"}{" "}
+                      {image.length} {image.length === 1 ? "file" : "files"}{" "}
                       selected
                     </p>
                   </div>

@@ -26,7 +26,7 @@ router
   .post(
     isLoggedIn,
     upload.array("image"),
-    validateCampground,
+    // validateCampground,
     catchAsync(createCampground)
   );
 
