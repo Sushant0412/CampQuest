@@ -75,6 +75,31 @@ export const showCampground = async (req, res) => {
   });
 };
 
+// API endpoint to get a single campground by ID
+export const getCampgroundById = async (req, res) => {
+  try {
+    const campground = await Campground.findById(req.params.id)
+      .populate({
+        path: "reviews",
+        populate: {
+          path: "author",
+        },
+      })
+      .populate("author");
+
+    if (!campground) {
+      return res.status(404).json({ error: "Campground not found" });
+    }
+
+    return res.status(200).json(campground);
+  } catch (error) {
+    console.error("Error fetching campground:", error);
+    return res
+      .status(500)
+      .json({ error: "Failed to fetch campground details" });
+  }
+};
+
 export const renderEditForm = async (req, res) => {
   const campground = await Campground.findById(req.params.id);
   if (!campground) {

@@ -9,6 +9,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { LoadingProvider, useLoading } from "./context/LoadingContext";
 import { useEffect } from "react";
 import NewCampground from "./Pages/NewCampground";
+import ViewCampground from "./Pages/ViewCampground";
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
         <Route path="/" element={<Layout />}>
           <Route path="/campgrounds" element={<Home />} />
           <Route path="/campgrounds/new" element={<NewCampground />} />
+          <Route path="/campgrounds/:id" element={<ViewCampground />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
         </Route>

@@ -7,6 +7,7 @@ import {
   approveCampground,
   revokeCampground,
   home,
+  getCampgroundById,
 } from "../controllers/campgrounds.js";
 import {
   isLoggedIn,
@@ -20,18 +21,16 @@ const upload = multer({ storage });
 
 const router = express.Router();
 
-router
-  .route("/")
-  .get(catchAsync(home))
-  .post(
-    isLoggedIn,
-    upload.array("image"),
-    // validateCampground,
-    catchAsync(createCampground)
-  );
+router.route("/").get(catchAsync(home)).post(
+  isLoggedIn,
+  upload.array("image"),
+  // validateCampground,
+  catchAsync(createCampground)
+);
 
 router
   .route("/:id")
+  .get(catchAsync(getCampgroundById))
   .put(
     isLoggedIn,
     isAuthor,
