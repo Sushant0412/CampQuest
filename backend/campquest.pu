@@ -1,0 +1,56 @@
+@startuml
+skinparam packageStyle rectangle
+
+package "CampQuest" {
+    class User {
+        - id: int
+        - username: string
+        - email: string
+        - password: string
+        - createdAt: Date
+        - updatedAt: Date
+        + register(): void
+        + login(): void
+        + logout(): void
+    }
+
+    class Campground {
+        - id: int
+        - name: string
+        - location: string
+        - description: string
+        - image: string
+        - createdAt: Date
+        - updatedAt: Date
+        - author: User
+        + addCampground(): void
+        + editCampground(): void
+        + deleteCampground(): void
+    }
+
+    class Review {
+        - id: int
+        - rating: int
+        - comment: string
+        - createdAt: Date
+        - updatedAt: Date
+        - author: User
+        - campground: Campground
+        + addReview(): void
+        + deleteReview(): void
+    }
+
+    class Map {
+        - id: int
+        - coordinates: string
+        + displayMap(): void
+    }
+
+
+    User "1" -- "0..*" Campground : author
+    Campground "1" -- "0..*" Review : reviews
+    User "1" -- "0..*" Review : author
+    Campground "1" -- "1" Map : map
+}
+
+@enduml
