@@ -23,7 +23,7 @@ export default defineConfig({
     //   },
     // }),
   ],
-  base: "/CampQuest/frontend",
+  base: "/CampQuest/",
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"), // shadcn-ui path alias
