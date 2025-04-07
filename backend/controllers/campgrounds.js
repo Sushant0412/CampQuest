@@ -159,12 +159,25 @@ export const updateCampground = async (req, res) => {
 };
 
 export const deleteCampground = async (req, res) => {
-  const { id } = req.params;
-  const campground = await Campground.findById(id);
-  await Campground.findByIdAndDelete(id);
-  await updateExcelWithAllCampgrounds();
-  req.flash("success", "Camp Successfully Deleted");
-  res.redirect("/campgrounds");
+  try {
+    const { id } = req.params;
+    const campground = await Campground.findById(id);
+
+    if (!campground) {
+      return res.status(404).json({ error: "Campground not found" });
+    }
+
+    await Campground.findByIdAndDelete(id);
+    await updateExcelWithAllCampgrounds();
+
+    return res.status(200).json({
+      success: true,
+      message: "Campground successfully deleted",
+    });
+  } catch (error) {
+    console.error("Error deleting campground:", error);
+    return res.status(500).json({ error: "Internal server error" });
+  }
 };
 
 export const approveCampground = async (req, res) => {
