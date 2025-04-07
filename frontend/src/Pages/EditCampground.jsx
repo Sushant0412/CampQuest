@@ -54,11 +54,25 @@ export default function EditCampground() {
 
   const form = useForm({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      title: "",
-      location: "",
-      description: "",
-      price: "",
+    defaultValues: async () => {
+      try {
+        const response = await axiosInstance.get(`/campgrounds/${id}`);
+        const campgroundData = response.data;
+        return {
+          title: campgroundData.title,
+          location: campgroundData.location,
+          description: campgroundData.description,
+          price: campgroundData.price.toString(),
+        };
+      } catch (error) {
+        console.error("Error loading campground data:", error);
+        return {
+          title: "",
+          location: "",
+          description: "",
+          price: "",
+        };
+      }
     },
     mode: "onChange",
   });
@@ -70,15 +84,6 @@ export default function EditCampground() {
         const campgroundData = response.data;
         setCampground(campgroundData);
         setImages(campgroundData.images || []);
-
-        // Set form default values
-        form.reset({
-          title: campgroundData.title,
-          location: campgroundData.location,
-          description: campgroundData.description,
-          price: campgroundData.price.toString(),
-        });
-
         setLoading(false);
       } catch (error) {
         console.error("Error fetching campground:", error);
@@ -92,7 +97,7 @@ export default function EditCampground() {
     };
 
     fetchCampground();
-  }, [id, form, navigate, toast]);
+  }, [id, navigate, toast]);
 
   const handleNewImageChange = (e) => {
     if (!e.target.files || e.target.files.length === 0) return;
@@ -145,7 +150,6 @@ export default function EditCampground() {
       await axiosInstance.put(`/campgrounds/${id}`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
-          authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
 

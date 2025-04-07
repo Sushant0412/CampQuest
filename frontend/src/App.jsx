@@ -10,6 +10,7 @@ import { LoadingProvider, useLoading } from "./context/LoadingContext";
 import { useEffect } from "react";
 import NewCampground from "./Pages/NewCampground";
 import ViewCampground from "./Pages/ViewCampground";
+import EditCampground from "./Pages/EditCampground";
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
           <Route path="/campgrounds" element={<Home />} />
           <Route path="/campgrounds/new" element={<NewCampground />} />
           <Route path="/campgrounds/:id" element={<ViewCampground />} />
+          <Route path="/campgrounds/:id/edit" element={<EditCampground />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
         </Route>

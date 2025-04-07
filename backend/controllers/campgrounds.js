@@ -110,34 +110,52 @@ export const renderEditForm = async (req, res) => {
 };
 
 export const updateCampground = async (req, res) => {
-  const { id } = req.params;
-  //console.log(req.body);
+  try {
+    const { id } = req.params;
+    //console.log(req.body);
 
-  const campground = await Campground.findByIdAndUpdate(id, {
-    ...req.body.campground,
-  });
-  const imgs = req.files.map((f) => ({
-    url: f.path,
-    filename: f.filename,
-  }));
-  campground.images.push(...imgs);
-  await campground.save();
-  if (req.body.deleteImages) {
-    for (let filename of req.body.deleteImages) {
-      await cloudinary.uploader.destroy(filename);
+    const campground = await Campground.findByIdAndUpdate(
+      id,
+      {
+        ...req.body.campground,
+      },
+      { new: true }
+    );
+
+    if (!campground) {
+      return res.status(404).json({ error: "Campground not found" });
     }
-    await campground.updateOne({
-      $pull: { images: { filename: { $in: req.body.deleteImages } } },
+
+    if (req.files && req.files.length > 0) {
+      const imgs = req.files.map((f) => ({
+        url: f.path,
+        filename: f.filename,
+      }));
+      campground.images.push(...imgs);
+    }
+
+    await campground.save();
+
+    if (req.body.deleteImages && req.body.deleteImages.length > 0) {
+      for (let filename of req.body.deleteImages) {
+        await cloudinary.uploader.destroy(filename);
+      }
+      await campground.updateOne({
+        $pull: { images: { filename: { $in: req.body.deleteImages } } },
+      });
+    }
+
+    await updateExcelWithAllCampgrounds();
+
+    return res.status(200).json({
+      success: true,
+      message: "Campground successfully updated",
+      campground: campground,
     });
+  } catch (error) {
+    console.error("Error updating campground:", error);
+    return res.status(500).json({ error: "Failed to update campground" });
   }
-  console.log(campground);
-  if (!campground) {
-    req.flash("error", "Camp doesn't exist");
-    return res.redirect("/campgrounds");
-  }
-  await updateExcelWithAllCampgrounds();
-  req.flash("success", "Camp Successfully Updated");
-  res.redirect(`/campgrounds/${campground._id}`);
 };
 
 export const deleteCampground = async (req, res) => {

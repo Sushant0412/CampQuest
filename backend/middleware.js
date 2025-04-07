@@ -114,12 +114,22 @@ const validateCampground = (req, res, next) => {
 };
 
 const isAuthor = async (req, res, next) => {
-  const campground = await Campground.findById(req.params.id);
-  if (!campground.author.equals(req.user._id)) {
-    req.flash("error", "You don't have the permission");
-    return res.redirect(`/campgrounds/${req.params.id}`);
+  try {
+    const campground = await Campground.findById(req.params.id);
+    if (!campground) {
+      return res.status(404).json({ error: "Campground not found" });
+    }
+
+    if (!campground.author.equals(req.user.id)) {
+      return res
+        .status(403)
+        .json({ error: "You don't have permission to edit this campground" });
+    }
+    next();
+  } catch (error) {
+    console.error("Error in isAuthor middleware:", error);
+    return res.status(500).json({ error: "Server error" });
   }
-  next();
 };
 
 const isReviewAuthor = async (req, res, next) => {

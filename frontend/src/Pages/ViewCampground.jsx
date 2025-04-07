@@ -32,6 +32,7 @@ export default function ViewCampground() {
       try {
         const response = await axiosInstance.get(`/campgrounds/${id}`);
         console.log("Campground data:", response.data);
+        console.log("Campground author:", response.data.author);
         setCampground(response.data);
         setReviews(response.data.reviews || []);
         setLoading(false);
@@ -55,7 +56,8 @@ export default function ViewCampground() {
               Authorization: `Bearer ${token}`,
             },
           });
-          setCurrentUser(response.data.user);
+          console.log("Current user:", response.data);
+          setCurrentUser(response.data);
         }
       } catch (error) {
         console.error("Error fetching current user:", error);
@@ -255,7 +257,9 @@ export default function ViewCampground() {
   const isAuthor =
     currentUser &&
     campground.author &&
-    currentUser._id === campground.author._id;
+    (currentUser._id === campground.author._id ||
+      currentUser.id === campground.author._id ||
+      currentUser._id === campground.author.id);
   const isAdmin = currentUser && currentUser.isAdmin;
 
   return (
@@ -382,7 +386,9 @@ export default function ViewCampground() {
             {/* Add Review Form */}
             {currentUser &&
               (!campground.author ||
-                currentUser._id !== campground.author._id) && (
+                (currentUser._id !== campground.author._id &&
+                  currentUser.id !== campground.author._id &&
+                  currentUser._id !== campground.author.id)) && (
                 <div className="mb-6">
                   <h3 className="text-xl font-semibold mb-3">Leave a Review</h3>
                   <form onSubmit={handleReviewSubmit} className="space-y-4">
@@ -490,7 +496,9 @@ export default function ViewCampground() {
                     <p className="mt-2 text-gray-700">{review.content}</p>
                     {currentUser &&
                       review.author &&
-                      currentUser._id === review.author._id && (
+                      (currentUser._id === review.author._id ||
+                        currentUser.id === review.author._id ||
+                        currentUser._id === review.author.id) && (
                         <Button
                           onClick={() => handleDeleteReview(review._id)}
                           variant="outline"
