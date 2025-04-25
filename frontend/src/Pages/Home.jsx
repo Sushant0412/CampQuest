@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axiosInstance from "../api/axiosInstance";
-import { MapPin, PlusCircle, Eye, CheckCircle, XCircle } from "lucide-react";
+import { MapPin, PlusCircle, Eye } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "../components/ui/button";
 import { useToast } from "../components/ui/use-toast";
@@ -12,21 +12,17 @@ const Home = () => {
   const { toast } = useToast();
 
   useEffect(() => {
-    // Check if user is admin - localStorage stores strings, so we need to compare with "true"
     const adminStatus = localStorage.getItem("isAdmin") === "true";
     setIsAdmin(adminStatus);
 
     const fetchCampgrounds = async () => {
       setLoading(true);
       try {
-        // If admin, fetch all campgrounds, otherwise only fetch approved ones
-        if (adminStatus) {
-          const response = await axiosInstance.get("/admin/campgrounds");
-          setCampgrounds(response.data);
-        } else {
-          const response = await axiosInstance.get("/campgrounds");
-          setCampgrounds(response.data);
-        }
+        const response = adminStatus
+          ? await axiosInstance.get("/admin/campgrounds")
+          : await axiosInstance.get("/campgrounds");
+
+        setCampgrounds(response.data);
       } catch (error) {
         console.error("Error fetching campgrounds:", error);
       } finally {
@@ -51,7 +47,6 @@ const Home = () => {
         </Link>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-        {/* If user is admin, show all campgrounds, otherwise filter to show only approved ones */}
         {(isAdmin
           ? campgrounds
           : campgrounds.filter((campground) => campground.approved)
@@ -84,20 +79,19 @@ const Home = () => {
                 <span className="text-sm truncate">{campground.location}</span>
               </div>
               <div className="flex flex-col space-y-2">
-                <div className="flex flex-col space-y-2">
-                  <Link
-                    className="inline-flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-lg shadow-md transition-all w-full"
-                    to={`/campgrounds/${campground._id}`}
-                  >
-                    <Eye className="w-5 h-5 mr-2" />
-                    View Details
-                  </Link>
+                <Link
+                  className="inline-flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-lg shadow-md transition-all w-full"
+                  to={`/campgrounds/${campground._id}`}
+                >
+                  <Eye className="w-5 h-5 mr-2" />
+                  View Details
+                </Link>
               </div>
             </div>
           </div>
         ))}
       </div>
-  </div>
+    </div>
   );
 };
 

@@ -260,7 +260,7 @@ export default function ViewCampground() {
     (currentUser._id === campground.author._id ||
       currentUser.id === campground.author._id ||
       currentUser._id === campground.author.id);
-  const isAdmin = currentUser && currentUser.isAdmin;
+  const isAdmin = currentUser && localStorage.getItem("isAdmin");
 
   return (
     <div className="container mx-auto p-6 pt-20">
@@ -334,26 +334,7 @@ export default function ViewCampground() {
                 <ChevronLeft className="h-4 w-4 mr-1" /> Back
               </Button>
 
-              {isAuthor && (
-                <>
-                  <Button
-                    onClick={() => navigate(`/campgrounds/${id}/edit`)}
-                    variant="outline"
-                    className="flex items-center text-blue-600 border-blue-600 hover:bg-blue-50"
-                  >
-                    <Edit className="h-4 w-4 mr-1" /> Edit
-                  </Button>
-                  <Button
-                    onClick={handleDeleteCampground}
-                    variant="outline"
-                    className="flex items-center text-red-600 border-red-600 hover:bg-red-50"
-                  >
-                    <Trash2 className="h-4 w-4 mr-1" /> Delete
-                  </Button>
-                </>
-              )}
-
-              {isAdmin && (
+              {isAdmin ? (
                 <Button
                   onClick={() =>
                     handleApproveRevoke(
@@ -365,6 +346,25 @@ export default function ViewCampground() {
                 >
                   {campground.approved ? "Revoke" : "Approve"}
                 </Button>
+              ) : (
+                isAuthor && (
+                  <>
+                    <Button
+                      onClick={() => navigate(`/campgrounds/${id}/edit`)}
+                      variant="outline"
+                      className="flex items-center text-blue-600 border-blue-600 hover:bg-blue-50"
+                    >
+                      <Edit className="h-4 w-4 mr-1" /> Edit
+                    </Button>
+                    <Button
+                      onClick={handleDeleteCampground}
+                      variant="outline"
+                      className="flex items-center text-red-600 border-red-600 hover:bg-red-50"
+                    >
+                      <Trash2 className="h-4 w-4 mr-1" /> Delete
+                    </Button>
+                  </>
+                )
               )}
             </div>
           </div>
