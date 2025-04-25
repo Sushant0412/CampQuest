@@ -74,6 +74,16 @@ export const adminRegister = async (req, res, next) => {
 };
 
 export const showUnapprovedCampgrounds = async (req, res) => {
-  const campgrounds = await Campground.find({});
-  res.render("admin/campgrounds", { campgrounds });
+  try {
+    const campgrounds = await Campground.find({}).populate("author");
+    console.log(campgrounds);
+
+    res.status(200).json(campgrounds);
+  } catch (error) {
+    console.error("Error fetching campgrounds:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch campgrounds",
+    });
+  }
 };

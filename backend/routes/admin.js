@@ -34,6 +34,6 @@ router
   .post(catchAsync(adminRegister));
 
 // Show all unapproved campgrounds for admin
-router.get("/campgrounds", isAdmin, catchAsync(showUnapprovedCampgrounds));
+router.get("/campgrounds", catchAsync(showUnapprovedCampgrounds));
 
 export default router;
