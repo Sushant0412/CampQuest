@@ -11,6 +11,7 @@ CampQuest is a full-stack web application that allows users to explore, create, 
 - **Reviews**: Add and delete reviews for campgrounds.
 - **Image Upload**: Upload images for campgrounds using Cloudinary.
 - **Responsive Design**: Mobile-friendly interface using Bootstrap.
+- **Admin Dashboard**: Admin Dashboard to approve or revoke camps and see statistics using **PowerBI**.
 
 ## 🛠️ Tech Stack
 
