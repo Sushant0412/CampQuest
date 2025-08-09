@@ -1,4 +1,5 @@
 import dotenv from "dotenv";
+import axios from "axios";
 
 if (process.env.NODE_ENV !== "production") {
   dotenv.config();
@@ -139,6 +140,20 @@ app.use("/campgrounds", campgroundRoutes);
 app.use("/campgrounds/:id/reviews", reviewRoutes);
 app.use("/admin", adminRoutes);
 app.use("/", userRoutes);
+
+// Every 20s, ping the other server
+setInterval(async () => {
+  try {
+    const start = Date.now();
+    const res = await axios.get("https://campquest-ping.onrender.com/");
+    const end = Date.now();
+    console.log(
+      `✅ Ping successful (${res.status}) - Latency: ${end - start}ms`
+    );
+  } catch (err) {
+    console.error(`❌ Ping failed: ${err.message}`);
+  }
+}, 20000); // 20 seconds
 
 app.get("/", (req, res) => {
   res.render("home");
